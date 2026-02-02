@@ -1,22 +1,20 @@
 import { EmployeeData } from "../../Employee";
-import Header from "./Header";
+import Sidebar from "./Sidebar";
 
 export default function Employee() {
   return (
     <>
-      <Header />
-
-     
+     <Sidebar/>
       <div className="pt-[60px] h-screen w-screen overflow-hidden">
 
         <div className="flex h-full">
 
-          {/* Sidebar */}
+      
           <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full bg-gray-50">
-            {/* Sidebar content */}
+          
           </div>
 
-          {/* Main content (scrolls) */}
+      
           <div className="w-full md:w-[82%] px-4 overflow-y-auto">
 
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8 pr-[45px] pt-[129px]">

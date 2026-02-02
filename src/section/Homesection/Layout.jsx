@@ -1,20 +1,19 @@
-import React from "react";
 import Header from "./Header";
-import Sidebar from "./Sidebar";
+import NavbarAfterLogin from "./NavbarAfterLogin";
+import NavbarBeforeLogin from "./NavbarBeforeLogin";
+import { Outlet } from "react-router-dom";
 
+export default function Layout() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-
-export default function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col">
-     
+    <>
       <Header/>
-
-      <main>{children}</main>
-
+      <main>
+        <Outlet />
+      </main>
       
-    <Sidebar/>
-  
-    </div>
+    </>
   );
 }
+

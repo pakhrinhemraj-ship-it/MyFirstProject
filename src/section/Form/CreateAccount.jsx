@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import NavbarBeforeLogin from "../Homesection/NavbarBeforeLogin";
 import Header from "../Homesection/Header";
 
 export default function Signup() {
@@ -8,22 +9,27 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (isLoggedIn) {
+    return <Navigate to="/team" replace />;
+  }
 
   const handlerSignup = (e) => {
     e.preventDefault();
 
-    // validation
+  
     if (!name || !email || !password) {
       setError("All fields are required");
       return;
     }
 
-    // get existing users
+ 
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // check duplicate email
+
     const isUserExist = users.find((user) => user.email === email);
 
     if (isUserExist) {
@@ -31,26 +37,26 @@ export default function Signup() {
       return;
     }
 
-    // new user object
+    
     const newUser = {
       name,
       email,
       password,
     };
 
-    // push new user
+   
     users.push(newUser);
 
-    // save to localStorage
+
     localStorage.setItem("users", JSON.stringify(users));
 
-    // redirect to login
+    
     navigate("/login");
   };
 
   return (
     <div>
-      <Header />
+     <Header />
 
       <section className="min-h-screen flex items-center justify-center bg-[#CACACA] px-4">
         <img
@@ -68,7 +74,7 @@ export default function Signup() {
           </div>
 
           <form className="flex flex-col gap-4" onSubmit={handlerSignup}>
-            {/* Email */}
+         
             <div>
               <label className="text-sm text-[#4D4D4D]">
                 Email Address
@@ -81,7 +87,7 @@ export default function Signup() {
               />
             </div>
 
-            {/* Username */}
+         
             <div>
               <label className="text-sm text-[#4D4D4D]">
                 Username
@@ -94,7 +100,7 @@ export default function Signup() {
               />
             </div>
 
-            {/* Password */}
+         
             <div className="relative">
               <label className="text-sm text-[#4D4D4D]">
                 Password
@@ -117,7 +123,7 @@ export default function Signup() {
               <p className="text-xs text-red-600">{error}</p>
             )}
 
-            {/* Terms */}
+           
             <div className="flex items-center gap-2">
               <input type="checkbox" required />
               <label className="text-sm text-[#4D4D4D]">
@@ -125,7 +131,7 @@ export default function Signup() {
               </label>
             </div>
 
-            {/* Submit */}
+          
             <button
               type="submit"
               className="bg-[#7d65bc] text-white rounded-md w-full h-[2.5rem] hover:bg-[#6a55a8] transition"
@@ -137,9 +143,8 @@ export default function Signup() {
           <p className="text-sm text-center text-gray-600 mt-6">
             Already have an account?{" "}
             <Link
-              to="/login"
-              className="text-[#7D66BD] font-semibold underline"
-            >
+              to="/loginaccount"
+              className="text-[#7D66BD] font-semibold underline">
               Login
             </Link>
           </p>

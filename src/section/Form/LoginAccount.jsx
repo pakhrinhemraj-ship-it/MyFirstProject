@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
+
+import NavbarBeforeLogin from "../Homesection/NavbarBeforeLogin";
 import Header from "../Homesection/Header";
 
 export default function LoginPage1() {
@@ -7,36 +9,42 @@ export default function LoginPage1() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
+  
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (isLoggedIn) {
+    return <Navigate to="/team" replace />;
+  }
 
   const handleLogin = (e) => {
-    e.preventDefault(); // stop refresh
+    e.preventDefault(); 
 
     if (!email || !password) {
       setError("Please enter email and password");
       return;
     }
 
-    // get users array
+    
+    
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // find user by email
+   
     const foundUser = users.find((user) => user.email === email);
 
-    // check email
     if (!foundUser) {
       setError("User not found. Please sign up.");
       return;
     }
 
-    // check password
+    
     if (foundUser.password !== password) {
       setError("Incorrect password. Try again.");
       return;
     }
 
-    // login success
+   localStorage.setItem("isLoggedIn", "true");
+     
     localStorage.setItem( "loggedInUser", JSON.stringify(foundUser));
 
     navigate("/team");
@@ -63,7 +71,7 @@ export default function LoginPage1() {
           </p>
 
           <form onSubmit={handleLogin}>
-            {/* Email */}
+    
             <div className="mb-4">
               <label className="block text-sm opacity-70 mb-1">
                 Email address
@@ -76,7 +84,7 @@ export default function LoginPage1() {
               />
             </div>
 
-            {/* Password */}
+          
             <div className="mb-4 relative">
               <div className="flex justify-between mb-1">
                 <span className="text-sm opacity-70">
@@ -121,10 +129,8 @@ export default function LoginPage1() {
             <span className="opacity-70">
               Don’t have an account?
             </span>{" "}
-            <Link
-              to="/signup2"
-              className="text-[#6E54B5] font-bold underline"
-            >
+            <Link to="/createaccount"
+              className="text-[#6E54B5] font-bold underline">
               Create Account
             </Link>
           </p>

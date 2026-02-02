@@ -1,33 +1,39 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./section/Homesection/Layout";
+import ProtectedRoute from "./ProtectedRoute";
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Header from './section/Homesection/Header';
-import Signup2 from './section/Form/Signup2';
-import Layout from './section/Homesection/layout';
-import Features from './section/Homesection/Features';
-import Pricing from './section/Homesection/Pricing';
-import Contact from './section/Homesection/Contact';
-import Team from './section/Homesection/Team';
-import Signup1 from "./section/Form/Signup1";
-
+import Header from "./section/Homesection/Header";
+import Features from "./section/Homesection/Features";
+import Pricing from "./section/Homesection/Pricing";
+import Contact from "./section/Homesection/Contact";
+import Team from "./section/Homesection/Team";
+import LoginAccount from "./section/Form/LoginAccount";
+import CreateAccount from "./section/Form/CreateAccount";
 
 export default function Apps() {
   return (
-    <div>
-        <BrowserRouter>
-        <Routes>
-            <Route path="/header" element = { <Layout> <Header /> </Layout>}/>
-            <Route path="/features" element = { <Layout> <Features /> </Layout>} />
-            <Route path="/pricing" element = { <Layout> <Pricing /> </Layout>} />
-            <Route path="/contact" element = { <Layout> <Contact/> </Layout>} />
+    <BrowserRouter>
+      <Routes>
+        {/* Layout wraps all pages */}
+        <Route element={<Layout />}>
+          
+          {/* Public pages */}
+          <Route index element={<Header />} /> {/* Use index for "/" */}
+          <Route path="features" element={<Features />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="loginaccount" element={<LoginAccount />} />
+          <Route path="createaccount" element={<CreateAccount />} />
 
-            <Route path="/team" element = { <Layout> <Team /> </Layout>} />
-            
-            <Route path="/Login" element = { <Layout> <Signup1 /> </Layout>} />
-            <Route path="/signup1" element = { <Layout> <Signup1 /> </Layout>} />
-            <Route path="/signup2" element = { <Layout> <Signup2 /> </Layout>} />
+          {/* Protected pages */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="team" element={<Team />} />
+          </Route>
+        </Route>
 
-        </Routes>
-        </BrowserRouter>
-    </div>
-  )
+        {/* Fallback page */}
+        <Route path="*" element={<div>Page not found</div>} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
