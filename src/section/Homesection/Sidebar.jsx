@@ -1,12 +1,16 @@
 import React from 'react'
 import TailwindDropdown from '../Form/DropDown';
+import useAuthStore from '../Store/useCounterStore';
 
 export default function Sidebar() {
    const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("loggedInUser");
     window.location.href = "/loginaccount";
+    useAuthStore((state) => state.logout)
+    
   };
+ 
 
   return (
     <div>
