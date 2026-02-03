@@ -14,11 +14,11 @@ export default function Apps() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Layout wraps all pages */}
+     
         <Route element={<Layout />}>
           
-          {/* Public pages */}
-          <Route index element={<Header />} /> {/* Use index for "/" */}
+          
+          <Route path="/" element={<Header />} />
           <Route path="features" element={<Features />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="contact" element={<Contact />} />

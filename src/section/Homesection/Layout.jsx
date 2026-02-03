@@ -1,7 +1,6 @@
 import Header from "./Header";
-import NavbarAfterLogin from "./NavbarAfterLogin";
-import NavbarBeforeLogin from "./NavbarBeforeLogin";
 import { Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 export default function Layout() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -9,6 +8,7 @@ export default function Layout() {
   return (
     <>
       <Header/>
+      { <Sidebar />}
       <main>
         <Outlet />
       </main>

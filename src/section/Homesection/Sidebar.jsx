@@ -10,7 +10,9 @@ export default function Sidebar() {
     useAuthStore((state) => state.logout)
     
   };
- 
+ const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
+  if (!isLoggedIn) return null;
 
   return (
     <div>

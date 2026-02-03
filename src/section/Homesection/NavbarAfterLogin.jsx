@@ -1,5 +1,6 @@
 import React from 'react'
 
+
 export default function NavbarAfterLogin() {
   return (
     <div>
@@ -14,6 +15,7 @@ export default function NavbarAfterLogin() {
                       </ul>
                       </div>
           </div>
+
     </div>
   )
 }

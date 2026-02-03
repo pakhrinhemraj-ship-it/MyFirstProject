@@ -51,7 +51,7 @@ export default function Signup() {
     localStorage.setItem("users", JSON.stringify(users));
 
     
-    navigate("/login");
+    navigate("/loginaccount");
   };
 
   return (

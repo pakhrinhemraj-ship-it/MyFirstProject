@@ -10,7 +10,7 @@ export let EmployeeData=[
     "id": 2,
     "name": "Bisaka Shrestha",
     "position":"Backend Developer",
-    "image": "/images/p1.png",
+    "image": "src/assets/p9.jpeg",
      "email": "bisakabisaka@gmail.com"
   },
   {

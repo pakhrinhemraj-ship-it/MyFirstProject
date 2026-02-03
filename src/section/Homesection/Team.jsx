@@ -1,10 +1,10 @@
 import { EmployeeData } from "../../Employee";
-import Sidebar from "./Sidebar";
+
 
 export default function Employee() {
   return (
     <>
-     <Sidebar/>
+    
       <div className="pt-[60px] h-screen w-screen overflow-hidden">
 
         <div className="flex h-full">
@@ -34,7 +34,7 @@ export default function Employee() {
                   <img
                     src={v.image}
                     alt={v.name}
-                    className="h-[107px] w-[107px] rounded-full mt-6"
+                    className="h-[112px] w-[107px] rounded-full mt-6"
                   />
                   <div className="text-center mt-4">
                     <p className="font-bold text-lg">{v.name}</p>
