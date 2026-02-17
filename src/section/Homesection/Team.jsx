@@ -1,53 +1,59 @@
-import { EmployeeData } from "../../Employee";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
+export default function Team() {
+  const [members, setMembers] = useState([]);
+  const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
-export default function Employee() {
+  useEffect(() => {
+    const storedMembers = JSON.parse(localStorage.getItem("teamMembers")) || [];
+    setMembers(storedMembers);
+  }, []);
+
   return (
     <>
-    
-      <div className="pt-[60px] h-screen w-screen overflow-hidden">
-
-        <div className="flex h-full">
-
-      
-          <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full bg-gray-50">
-          
-          </div>
-
-      
-          <div className="w-full md:w-[82%] px-4 overflow-y-auto">
-
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 pr-[45px] pt-[129px]">
-              <p className="text-[24px] font-bold mb-4 sm:mb-0">Team</p>
-              <button className="text-[#6E54B5] font-medium font-bricolage border border-[#6E54B5] rounded-[8px] w-[130px] h-[42px]">
-                Invite Admin
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              {EmployeeData.map((v, i) => (
-                <div
-                  key={i}
-                  className="bg-white border border-gray-300 rounded-lg shadow-sm
-                  flex flex-col items-center p-2 h-[250px] w-[231px]"
-                >
-                  <img
-                    src={v.image}
-                    alt={v.name}
-                    className="h-[112px] w-[107px] rounded-full mt-6"
-                  />
-                  <div className="text-center mt-4">
-                    <p className="font-bold text-lg">{v.name}</p>
-                    <p className="text-sm">{v.position}</p>
-                    <p className="text-sm text-gray-600">{v.email}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-          </div>
+    <div className="pt-[60px] h-screen w-screen overflow-hidden">
+       <div className="flex h-full">
+        <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full bg-gray-50">
+          {/* Sidebar */}
         </div>
+
+   <div className="w-full md:w-[82%] px-4 overflow-y-auto">
+    <div className="p-6 mt-[129px]">
+      <div className="flex justify-between mb-6">
+        <h2 className="text-2xl font-bold">Team Members</h2>
+        {currentUser?.role === "admin" && (
+        <Link to="/addteammember" ><button className="h-[3rem] w-[10rem] text-[#6E54B5] px-4 py-2 border border-[#6E54B5] rounded-[10px]">
+            Invite Admin
+            </button>
+          </Link>
+        )}
       </div>
+
+      <div className="grid grid-cols-4 gap-4">
+        {members.length === 0 ? (
+          <p>No team members yet.</p>
+        ) : (
+          members.map((member, idx) => (
+            <div key={idx} className="border p-4 h-[281.26px] w-[254.98px] shadow">
+              <div className="flex justify-center">
+              <img src={member.image} alt="API image" className=" rounded-full h-[107.05px] w-[107.05px] m-2"/>
+             </div>
+              <div className="text-center mt-2">
+              <h3 className="font-bold text-[16px]">{member.firstname} {member.lastname}</h3>
+              <p className="font-semibold text-[14px]">{member.position}</p>
+              <p className="font-medium text-[14px]">{member.email}</p>
+              <p className="font-semibold text-[14px]">{member.phone}</p>
+              <p className="font-semibold text-[14px]">{member.gender}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      </div>
+    </div>
+    </div>
+    </div>
     </>
   );
 }
