@@ -59,8 +59,6 @@ export default function Signup() {
 
   return (
     <div>
-      <Header />
-
       <section className="min-h-screen flex items-center justify-center bg-[#CACACA] px-4">
         <img
           src="src/assets/p2.png"
@@ -123,8 +121,8 @@ export default function Signup() {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full mb-3 px-4 py-2 border rounded-md"
-            >
+              className="w-full mb-3 px-4 py-2 border rounded-md">
+                <option value="">--Select Role--</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>

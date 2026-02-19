@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function AddTeamMember() {
+export default function EditTeamMember() {
   const navigate = useNavigate();
+  const { email } = useParams(); // assuming you pass the member email in the URL
   const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
+ 
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -13,10 +14,10 @@ export default function AddTeamMember() {
     position: "",
     gender: "",
     role: "user",
-    image: "", // ✅ Added image field
+    image: "",
   });
 
-  // ✅ Redirect non-admins immediately
+  // ✅ Redirect non-admins
   useEffect(() => {
     if (!currentUser || currentUser.role !== "admin") {
       alert("You do not have permission to access this page!");
@@ -24,31 +25,35 @@ export default function AddTeamMember() {
     }
   }, [currentUser, navigate]);
 
-  // ✅ Handle input change
+  // ✅ Load existing member data
+  useEffect(() => {
+    const members = JSON.parse(localStorage.getItem("teamMembers")) || [];
+    const member = members.find((m) => m.email === email);
+    if (!member) {
+      alert("Team member not found!");
+      navigate("/team");
+    } else {
+      setForm(member);
+    }
+  }, [email, navigate]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle image upload and convert to Base64
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = reader.result;
-      setForm({ ...form, image: base64 });
+      setForm({ ...form, image: reader.result });
     };
     reader.readAsDataURL(file);
   };
-  // ✅ Handle form submit
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!currentUser || currentUser.role !== "admin") {
-      alert("You are not allowed to add a team member.");
-      return;
-    }
 
     // Validation
     for (let key in form) {
@@ -70,41 +75,34 @@ export default function AddTeamMember() {
       return;
     }
 
-    // Save to localStorage
-    const existingMembers = JSON.parse(localStorage.getItem("teamMembers")) || [];
-    const isExist = existingMembers.find((m) => m.email === form.email);
-    if (isExist) {
+    const members = JSON.parse(localStorage.getItem("teamMembers")) || [];
+    const index = members.findIndex((m) => m.email === email);
+    if (index === -1) {
+      alert("Team member not found!");
+      return;
+    }
+
+    // Prevent duplicate email (if changed)
+    if (email !== members[index].email && members.some((m) => m.email === form.email)) {
       alert("This email already exists in team members!");
       return;
     }
 
-    existingMembers.push(form);
-    localStorage.setItem("teamMembers", JSON.stringify(existingMembers));
+    members[index] = form;
+    localStorage.setItem("teamMembers", JSON.stringify(members));
 
-    alert("Team Member Added Successfully ✅");
-
-    setForm({
-      firstname: "",
-      lastname: "",
-      email: "",
-      phone: "",
-      position: "",
-      gender: "",
-      role: "user",
-      image: "",
-    });
-
+    alert("Team Member Updated Successfully ✅");
     navigate("/team");
   };
 
   return (
-    <div className="pt-[82px] h-screen w-screen overflow-hidden">
+    <div className="pt-[60px] h-screen w-screen overflow-hidden">
       <div className="flex h-full">
-        <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full bg-white">
+        <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full ">
           {/* Sidebar */}
         </div>
         <div className="w-full md:w-[82%] px-4 overflow-y-auto">
-          <h2 className="font-semibold text-[24px] mt-[120px] pl-4">Add Team Member</h2>
+          <h2 className="font-semibold text-[24px] mt-[120px] pl-4">Edit Team Member</h2>
           <form onSubmit={handleSubmit}>
             {/* Image Upload */}
             <div className="mb-4">
@@ -151,7 +149,6 @@ export default function AddTeamMember() {
                   className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
                 />
               </div>
-
               <div>
                 <label>Lastname</label><br />
                 <input
@@ -178,7 +175,6 @@ export default function AddTeamMember() {
                   className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
                 />
               </div>
-
               <div>
                 <label>Phonenumber</label><br />
                 <input
@@ -203,8 +199,7 @@ export default function AddTeamMember() {
                   className="w-[460px] rounded-[15px] border px-4 py-3"
                 >
                   <option value="">-- Select Position --</option>
-                  {/* Add your optgroups and options here */}
-                  <option>Chief Executive Officer (CEO)</option>
+                <option>Chief Executive Officer (CEO)</option>
                    <optgroup label="Top Management / Executive">
       <option>Chief Executive Officer (CEO)</option>
       <option>Chief Operating Officer (COO)</option>
@@ -310,7 +305,6 @@ export default function AddTeamMember() {
     </optgroup>
                 </select>
               </div>
-
               <div>
                 <label>Gender</label><br />
                 <select
@@ -332,7 +326,7 @@ export default function AddTeamMember() {
                 type="submit"
                 className="rounded-[15px] h-[50px] w-[190px] bg-[#6E54B5] font-medium text-white"
               >
-                Add Member
+                Update Profile
               </button>
             </div>
           </form>

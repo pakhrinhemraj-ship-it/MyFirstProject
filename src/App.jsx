@@ -9,6 +9,8 @@ import Team from "./section/Homesection/Team";
 import LoginAccount from "./section/Form/LoginAccount";
 import CreateAccount from "./section/Form/CreateAccount";
 import AddTeamMember from "./section/Form/AddTeamMember";
+import Profile from "./section/Homesection/Profile";
+import EditTeamMember from "./section/Form/EditTeamMember";
 
 export default function Apps() {
   return (
@@ -29,6 +31,7 @@ export default function Apps() {
           <Route element={<ProtectedRoute />}>
             <Route path="team" element={<Team />} />
              <Route path="addteammember" element={<AddTeamMember />} />
+             <Route path="/edit/:email" element={<EditTeamMember/>} />
           </Route>
 
         </Route>
