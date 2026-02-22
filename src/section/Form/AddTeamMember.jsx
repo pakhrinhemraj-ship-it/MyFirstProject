@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function AddTeamMember() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function AddTeamMember() {
   // ✅ Redirect non-admins immediately
   useEffect(() => {
     if (!currentUser || currentUser.role !== "admin") {
-      alert("You do not have permission to access this page!");
+      toast.warning("You do not have permission to access this page!");
       navigate("/team");
     }
   }, [currentUser, navigate]);
@@ -46,7 +47,7 @@ export default function AddTeamMember() {
     e.preventDefault();
 
     if (!currentUser || currentUser.role !== "admin") {
-      alert("You are not allowed to add a team member.");
+      toast.warning("You are not allowed to add a team member.");
       return;
     }
 
@@ -60,13 +61,13 @@ export default function AddTeamMember() {
 
     const phonePattern = /^[0-9]{10}$/;
     if (!phonePattern.test(form.phone)) {
-      alert("Phone number must be 10 digits");
+      toast.warning("Phone number must be 10 digits");
       return;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(form.email)) {
-      alert("Please enter a valid email address");
+      toast.warning("Please enter a valid email address");
       return;
     }
 
@@ -74,14 +75,14 @@ export default function AddTeamMember() {
     const existingMembers = JSON.parse(localStorage.getItem("teamMembers")) || [];
     const isExist = existingMembers.find((m) => m.email === form.email);
     if (isExist) {
-      alert("This email already exists in team members!");
+      toast.warning("This email already exists in team members!");
       return;
     }
 
     existingMembers.push(form);
     localStorage.setItem("teamMembers", JSON.stringify(existingMembers));
 
-    alert("Team Member Added Successfully ✅");
+   toast.success("Team Member Added Successfully ✅");
 
     setForm({
       firstname: "",
@@ -100,11 +101,18 @@ export default function AddTeamMember() {
   return (
     <div className="pt-[82px] h-screen w-screen overflow-hidden">
       <div className="flex h-full">
-        <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full bg-white">
+         <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
+            max-w-[350px] p-4 h-full bg-white shadow ">
           {/* Sidebar */}
         </div>
         <div className="w-full md:w-[82%] px-4 overflow-y-auto">
-          <h2 className="font-semibold text-[24px] mt-[120px] pl-4">Add Team Member</h2>
+            <button
+          onClick={() => navigate("/team")}
+          className=" pl-6 text-gray-600 text-[2.5rem] font-bold 
+                     hover:text-blue-600 transition mt-[50px]" >
+          ← 
+        </button>
+          <h2 className="font-semibold text-[24px] mt-[30px] pl-4">Add Team Member</h2>
           <form onSubmit={handleSubmit}>
             {/* Image Upload */}
             <div className="mb-4">
@@ -139,68 +147,66 @@ export default function AddTeamMember() {
             </div>
 
             {/* Firstname & Lastname */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Firstname</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 ">
+                <label>Firstname</label>
                 <input
                   type="text"
                   name="firstname"
                   value={form.firstname}
                   onChange={handleChange}
                   placeholder="Firstname"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
-
-              <div>
-                <label>Lastname</label><br />
+              <div className="flex-1">
+                <label>Lastname</label>
                 <input
                   type="text"
                   name="lastname"
                   value={form.lastname}
                   onChange={handleChange}
                   placeholder="Lastname"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
             </div>
 
             {/* Email & Phone */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Email</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Email</label>
                 <input
                   type="text"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
                   placeholder="example@email.com"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
-
-              <div>
-                <label>Phonenumber</label><br />
+              <div className="flex-1">
+                <label>Phone Number</label>
                 <input
                   type="text"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="9800000001"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
             </div>
 
             {/* Position & Gender */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Position</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Position</label>
                 <select
                   name="position"
                   value={form.position}
                   onChange={handleChange}
-                  className="w-[460px] rounded-[15px] border px-4 py-3"
+                  className="w-full border rounded-xl h-12 px-4"
                 >
                   <option value="">-- Select Position --</option>
                   {/* Add your optgroups and options here */}
@@ -311,13 +317,13 @@ export default function AddTeamMember() {
                 </select>
               </div>
 
-              <div>
-                <label>Gender</label><br />
+               <div className="flex-1">
+                <label>Gender</label>
                 <select
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="w-[460px] rounded-[15px] border px-4 py-3"
+                  className="w-full border rounded-xl h-12 px-4"
                 >
                   <option value="">Select</option>
                   <option value="Male">Male</option>

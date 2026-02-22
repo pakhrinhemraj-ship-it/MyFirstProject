@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link, Navigate } from "react-router-dom";
-import Header from "../Homesection/Header";
 import useAuthStore from "../Store/useCounterStore";
+import { toast } from "react-toastify";
 
 export default function LoginPage1() {
   const [email, setEmail] = useState("");
@@ -21,6 +21,7 @@ export default function LoginPage1() {
     e.preventDefault();
     setError("");
 
+   
     if (!email || !password) {
       setError("Please enter email and password");
       return;
@@ -34,6 +35,7 @@ export default function LoginPage1() {
 
     if (!foundUser) {
       setError("Invalid email or password");
+      toast.error("Login Failed!");
       return;
     }
 
@@ -58,6 +60,7 @@ export default function LoginPage1() {
       localStorage.removeItem("rememberMe");
     }
 
+    toast.success("Login Success!");
     navigate("/team");
   };
 

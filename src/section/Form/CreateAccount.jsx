@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
-import NavbarBeforeLogin from "../Homesection/NavbarBeforeLogin";
-import Header from "../Homesection/Header";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +19,7 @@ export default function Signup() {
 
   const handlerSignup = (e) => {
     e.preventDefault();
-
+   toast.success("Account Created Successfully!");
     // Validate required fields
     if (!name || !email || !password) {
       setError("All fields are required");

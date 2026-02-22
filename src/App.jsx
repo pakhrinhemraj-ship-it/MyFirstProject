@@ -9,12 +9,14 @@ import Team from "./section/Homesection/Team";
 import LoginAccount from "./section/Form/LoginAccount";
 import CreateAccount from "./section/Form/CreateAccount";
 import AddTeamMember from "./section/Form/AddTeamMember";
-import Profile from "./section/Homesection/Profile";
 import EditTeamMember from "./section/Form/EditTeamMember";
+import { ToastContainer } from "react-toastify";
 
 export default function Apps() {
   return (
     <BrowserRouter>
+    
+         <ToastContainer />
       <Routes>
      
         <Route element={<Layout />}>
@@ -33,7 +35,6 @@ export default function Apps() {
              <Route path="addteammember" element={<AddTeamMember />} />
              <Route path="/edit/:email" element={<EditTeamMember/>} />
           </Route>
-
         </Route>
 
 

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function EditTeamMember() {
+   const [activeTab, setActiveTab] = useState("edit");
   const navigate = useNavigate();
-  const { email } = useParams(); // assuming you pass the member email in the URL
+  const { email } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
- 
+
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -17,20 +19,27 @@ export default function EditTeamMember() {
     image: "",
   });
 
-  // ✅ Redirect non-admins
-  useEffect(() => {
-    if (!currentUser || currentUser.role !== "admin") {
-      alert("You do not have permission to access this page!");
-      navigate("/team");
-    }
-  }, [currentUser, navigate]);
+ useEffect(() => {
+  if (!currentUser || !email) {
+    toast.error("Access denied!");
+    navigate("/team");
+    return;
+  }
 
-  // ✅ Load existing member data
+  const isAdmin = currentUser.role === "admin";
+  const isOwnProfile = currentUser.email === email;
+
+  if (!isAdmin && !isOwnProfile) {
+    toast.error("You do not have permission to edit this profile!");
+    navigate("/team");
+  }
+}, [currentUser, email, navigate]);
+
   useEffect(() => {
     const members = JSON.parse(localStorage.getItem("teamMembers")) || [];
     const member = members.find((m) => m.email === email);
     if (!member) {
-      alert("Team member not found!");
+     toast.error("Team member not found!");
       navigate("/team");
     } else {
       setForm(member);
@@ -55,72 +64,83 @@ export default function EditTeamMember() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
     for (let key in form) {
       if (form[key].trim() === "") {
-        alert(`Please fill the ${key} field`);
+        toast.warning(`Please fill the ${key} field`);
         return;
       }
     }
 
     const phonePattern = /^[0-9]{10}$/;
     if (!phonePattern.test(form.phone)) {
-      alert("Phone number must be 10 digits");
+      toast.warning("Phone number must be 10 digits");
       return;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(form.email)) {
-      alert("Please enter a valid email address");
+     toast.warning("Please enter a valid email address");
       return;
     }
 
     const members = JSON.parse(localStorage.getItem("teamMembers")) || [];
     const index = members.findIndex((m) => m.email === email);
     if (index === -1) {
-      alert("Team member not found!");
+      toast.warning("Team member not found!");
       return;
     }
 
-    // Prevent duplicate email (if changed)
     if (email !== members[index].email && members.some((m) => m.email === form.email)) {
-      alert("This email already exists in team members!");
+      toast.success("This email already exists in team members!");
       return;
     }
 
     members[index] = form;
     localStorage.setItem("teamMembers", JSON.stringify(members));
 
-    alert("Team Member Updated Successfully ✅");
+   toast.success("Team Member Updated Successfully ✅");
     navigate("/team");
   };
 
   return (
-    <div className="pt-[60px] h-screen w-screen overflow-hidden">
+    <>
+    <div className="pt-[60px] min-h-screen w-full bg-gray-50 hidden">
       <div className="flex h-full">
-        <div className="w-full sm:w-[40%] md:w-[25%] lg:w-[18%] p-4 h-full ">
-          {/* Sidebar */}
+        {/* Sidebar placeholder */}
+         <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
+            max-w-[350px] p-4 h-full bg-white shadow">
         </div>
-        <div className="w-full md:w-[82%] px-4 overflow-y-auto">
-          <h2 className="font-semibold text-[24px] mt-[120px] pl-4">Edit Team Member</h2>
-          <form onSubmit={handleSubmit}>
+
+        {/* Main Content */}
+        <div className="w-full md:w-[75%] lg:w-[82%] px-4 md:px-8 overflow-y-auto">
+         
+          <button
+            onClick={() => navigate("/team")}
+            className="text-gray-600 text-3xl md:text-4xl font-bold hover:text-blue-600 transition mt-4 md:mt-6"
+          >
+            ←
+          </button>
+
+          <h2 className="font-semibold text-xl md:text-2xl mt-4 md:mt-6 mb-6">
+            Edit Team Member
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Image Upload */}
-            <div className="mb-4">
-              <div className="flex justify-center items-center mt-[40px]">
-                {form.image ? (
-                  <img
-                    src={form.image}
-                    alt="profile"
-                    className="h-[137.53px] w-[137.53px] rounded-full"
-                  />
-                ) : (
-                  <img
-                    src="src/assets/p15.png"
-                    alt=""
-                    className="h-[137.53px] w-[137.53px]"
-                  />
-                )}
-              </div>
+            <div className="flex flex-col items-center">
+              {form.image ? (
+                <img
+                  src={form.image}
+                  alt="profile"
+                  className="h-32 w-32 md:h-36 md:w-36 rounded-full object-cover"
+                />
+              ) : (
+                <img
+                  src="src/assets/p15.png"
+                  alt=""
+                  className="h-32 w-32 md:h-36 md:w-36 object-cover"
+                />
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -130,76 +150,76 @@ export default function EditTeamMember() {
               />
               <label
                 htmlFor="upload-photo"
-                className="text-[14px] text-center text-[#6E54B5] cursor-pointer font-semibold block mt-2"
+                className="mt-2 text-sm md:text-base text-[#6E54B5] font-semibold cursor-pointer"
               >
                 Upload Photo
               </label>
             </div>
 
             {/* Firstname & Lastname */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Firstname</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 ">
+                <label>Firstname</label>
                 <input
                   type="text"
                   name="firstname"
                   value={form.firstname}
                   onChange={handleChange}
                   placeholder="Firstname"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
-              <div>
-                <label>Lastname</label><br />
+              <div className="flex-1">
+                <label>Lastname</label>
                 <input
                   type="text"
                   name="lastname"
                   value={form.lastname}
                   onChange={handleChange}
                   placeholder="Lastname"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
             </div>
 
             {/* Email & Phone */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Email</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Email</label>
                 <input
                   type="text"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
                   placeholder="example@email.com"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
-              <div>
-                <label>Phonenumber</label><br />
+              <div className="flex-1">
+                <label>Phone Number</label>
                 <input
                   type="text"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="9800000001"
-                  className="pl-4 border rounded-[15px] h-[50px] w-[460px]"
+                  className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
             </div>
 
             {/* Position & Gender */}
-            <div className="flex gap-4 p-[10px] justify-center">
-              <div>
-                <label>Position</label><br />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Position</label>
                 <select
                   name="position"
                   value={form.position}
                   onChange={handleChange}
-                  className="w-[460px] rounded-[15px] border px-4 py-3"
+                  className="w-full border rounded-xl h-12 px-4"
                 >
                   <option value="">-- Select Position --</option>
-                <option>Chief Executive Officer (CEO)</option>
+                  <option>Chief Executive Officer (CEO)</option>
                    <optgroup label="Top Management / Executive">
       <option>Chief Executive Officer (CEO)</option>
       <option>Chief Operating Officer (COO)</option>
@@ -305,13 +325,13 @@ export default function EditTeamMember() {
     </optgroup>
                 </select>
               </div>
-              <div>
-                <label>Gender</label><br />
+              <div className="flex-1">
+                <label>Gender</label>
                 <select
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="w-[460px] rounded-[15px] border px-4 py-3"
+                  className="w-full border rounded-xl h-12 px-4"
                 >
                   <option value="">Select</option>
                   <option value="Male">Male</option>
@@ -321,10 +341,11 @@ export default function EditTeamMember() {
               </div>
             </div>
 
-            <div className="mt-[30px] mb-6 flex justify-end pr-10">
+            {/* Submit Button */}
+            <div className="flex justify-center md:justify-end">
               <button
                 type="submit"
-                className="rounded-[15px] h-[50px] w-[190px] bg-[#6E54B5] font-medium text-white"
+                className="bg-[#6E54B5] text-white font-medium rounded-xl h-12 w-44 hover:bg-[#593eb5] transition"
               >
                 Update Profile
               </button>
@@ -333,5 +354,259 @@ export default function EditTeamMember() {
         </div>
       </div>
     </div>
+
+
+{/* team member edit for personal */}
+ <div className="pt-[60px] min-h-screen w-full bg-gray-50">
+  <div className="flex flex-col md:flex-row h-full">
+    
+    {/* Sidebar */}
+    <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] max-w-[350px] p-4 h-full bg-white shadow">
+      {/* Sidebar content here */}
+    </div>
+
+    {/* Main Content */}
+    <div className="flex-1 px-4 md:px-8 overflow-y-auto">
+      
+      {/* Back Button */}
+      <button
+        onClick={() => navigate("/team")}
+        className="text-gray-600 text-3xl md:text-4xl font-bold hover:text-blue-600 transition mt-4 md:mt-6"
+      >
+        ←
+      </button>
+
+      {/* Tabs */}
+      <div className="border-b border-gray-200 mt-4">
+        <ul className="flex space-x-6">
+          <li>
+            <button
+              onClick={() => setActiveTab("edit")}
+              className={`px-4 py-2 font-semibold focus:outline-none -mb-px ${
+                activeTab === "edit"
+                  ? "text-purple-600 border-b-2 border-purple-600"
+                  : "text-gray-600 hover:text-purple-600 hover:border-purple-600"
+              }`}
+            >
+              Edit Profile
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => setActiveTab("preferences")}
+              className={`px-4 py-2 font-semibold focus:outline-none -mb-px ${
+                activeTab === "preferences"
+                  ? "text-purple-600 border-b-2 border-purple-600"
+                  : "text-gray-600 hover:text-purple-600 hover:border-purple-600"
+              }`}>
+              Preferences
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => setActiveTab("security")}
+              className={`px-4 py-2 font-semibold focus:outline-none -mb-px ${
+                activeTab === "security"
+                  ? "text-purple-600 border-b-2 border-purple-600"
+                  : "text-gray-600 hover:text-purple-600 hover:border-purple-600"
+              }`}
+            >
+              Security
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {/* Edit Profile Section */}
+      {activeTab === "edit" && (
+        <section id="editProfile" className="mt-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Image Upload */}
+            <div className="flex gap-[10rem]">
+              <div>
+            <div className="flex flex-col items-center">
+              {form.image ? (
+                <img
+                  src={form.image}
+                  alt="profile"
+                  className="h-32 w-32 md:h-36 md:w-36 rounded-full object-cover"
+                />
+              ) : (
+                <img
+                  src="src/assets/p15.png"
+                  alt="default"
+                  className="h-32 w-32 md:h-36 md:w-36 object-cover"
+                />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+                id="upload-photo"
+              />
+              <label
+                htmlFor="upload-photo"
+                className="mt-2 text-sm md:text-base text-[#6E54B5] font-semibold cursor-pointer"
+              >
+                Upload Photo
+              </label>
+            </div>
+            </div>
+             <div>
+            {/* Name */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Your Name</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  placeholder="Firstname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+              <div className="flex-1">
+                <label>User Name</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  value={form.lastname}
+                  onChange={handleChange}
+                  placeholder="Lastname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+            </div>
+
+            {/* Email & Phone */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Email</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="example@email.com"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+              <div className="flex-1">
+                <label>Password</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="9800000001"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+            </div>
+
+           
+             <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Date of Birth</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  placeholder="Firstname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+              <div className="flex-1">
+                <label> Present Address</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  value={form.lastname}
+                  onChange={handleChange}
+                  placeholder="Lastname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+            </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Permanent Address</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  placeholder="Firstname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+              <div className="flex-1">
+                <label>City</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  value={form.lastname}
+                  onChange={handleChange}
+                  placeholder="Lastname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+            </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label>Postal Code</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  placeholder="Firstname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+              <div className="flex-1">
+                <label>Country</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  value={form.lastname}
+                  onChange={handleChange}
+                  placeholder="Lastname"
+                  className="w-full border rounded-xl h-12 px-4"
+                />
+              </div>
+            </div>
+            
+
+            {/* Submit */}
+            <div className="flex justify-center md:justify-end">
+              <button
+                type="submit"
+                className="bg-[#6E54B5] text-white font-medium rounded-xl h-12 w-44 hover:bg-[#593eb5] transition"
+              >
+                Update Profile
+              </button>
+            </div>
+            </div>
+            </div>
+          </form>
+        </section>
+      )}
+
+      {/* Preferences Section */}
+      {activeTab === "preferences" && <section id="Preferences" className="mt-6">{/* Preferences content */}</section>}
+
+      {/* Security Section */}
+      {activeTab === "security" && <section id="Security" className="mt-6">{/* Security content */}</section>}
+
+    </div>
+  </div>
+</div>
+    </>
   );
 }
