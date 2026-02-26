@@ -101,10 +101,11 @@ export default function AddTeamMember() {
   return (
     <div className="pt-[82px] h-screen w-screen overflow-hidden">
       <div className="flex h-full">
+        {/* Sidebar */}
          <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
             max-w-[350px] p-4 h-full bg-white shadow ">
-          {/* Sidebar */}
-        </div>
+          </div>
+          
         <div className="w-full md:w-[82%] px-4 overflow-y-auto">
             <button
           onClick={() => navigate("/team")}

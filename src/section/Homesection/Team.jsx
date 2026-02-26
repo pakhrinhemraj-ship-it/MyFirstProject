@@ -1,18 +1,44 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Team() {
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
- const navigate = useNavigate();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
+  // Load members
   useEffect(() => {
     const storedMembers = JSON.parse(localStorage.getItem("teamMembers")) || [];
     setMembers(storedMembers);
   }, []);
+
+  // 🔥 Detect URL and open modal
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+
+    // /team/profile/email
+    if (pathParts[2] === "profile" && pathParts[3]) {
+      const email = decodeURIComponent(pathParts[3]);
+      const found = members.find((m) => m.email === email);
+      setSelectedMember(found || null);
+    } else {
+      setSelectedMember(null);
+    }
+  }, [location.pathname, members]);
+
+  // 🔥 Open profile + change URL
+  const openProfile = (member) => {
+    navigate(`/team/profile/${member.email}`);
+  };
+
+  // 🔥 Close modal + reset URL
+  const closeProfile = () => {
+    navigate("/team");
+  };
 
   return (
    <div className="pt-[82px] h-screen w-screen overflow-hidden">
@@ -49,9 +75,9 @@ export default function Team() {
                 {members.map((member, idx) => (
                   <div
                     key={idx}
-                    onClick={() => setSelectedMember(member)}
-                    className="border p-4 h-[281.26px] w-[254.98px] rounded-lg shadow cursor-pointer flex flex-col items-center hover:bg-purple-50 bg-white"
-                  >
+                     onClick={() => openProfile(member)}
+                    className="border p-4 h-[281.26px] w-[254.98px] rounded-lg shadow cursor-pointer
+                     flex flex-col items-center hover:bg-purple-50 bg-white">
                     <img
                       src={member.image || "/default-profile.png"}
                       alt="Profile"
@@ -78,7 +104,7 @@ export default function Team() {
         {/* Modal Overlay: inside main content only */}
         {selectedMember && (
   <div className="fixed inset-0 bg-black/40 flex justify-center  items-start sm:items-center z-50 overflow-y-auto p-4"
-    onClick={() => setSelectedMember(null)} >
+    onClick={closeProfile} >
     <div
       className="max-w-[532px] sm:w-[90%] md:w-[75%] 
         lg:w-[60%] xl:w-[45%] 2xl:w-[35%] bg-white 
@@ -107,7 +133,7 @@ export default function Team() {
 
         {(currentUser?.role === "admin" ||
           currentUser?.email === selectedMember.email) && (
-          <Link to={`/edit/${selectedMember.email}`}>
+          <Link to={`/team/profile//editprofile/${selectedMember.email}`}>
             <button className="bg-[#EAE2FF] text-[#6E54B5] px-4 py-2 rounded-lg text-sm hover:bg-purple-100 transition">
               Edit Profile
             </button>
@@ -120,7 +146,10 @@ export default function Team() {
       {/* Profile Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base text-[#202224]">
         <p>
-          <strong>Email:</strong> {selectedMember.email}
+          <strong>Your Name:</strong> {selectedMember.yourname || "-"}
+        </p>
+         <p>
+          <strong>User Name:</strong> {selectedMember.username || "-"}
         </p>
         <p>
           <strong>Phone:</strong> {selectedMember.phone || "-"}
@@ -131,12 +160,32 @@ export default function Team() {
         <p>
           <strong>Gender:</strong> {selectedMember.gender || "-"}
         </p>
-       
+          <p>
+          <strong>Email:</strong> {selectedMember.email || "-"}
+        </p>
+        <p>
+          <strong>Permanent Address:</strong> {selectedMember.permanentaddress || "-"}
+        </p>
+        <p>
+          <strong>Present Address:</strong> {selectedMember.presentaddress || "-"}
+        </p>
+        <p>
+          <strong>City:</strong> {selectedMember.city || "-"}
+        </p>
+        <p>
+          <strong>Country:</strong> {selectedMember.country || "-"}
+        </p>
+        <p>
+          <strong>Postal Code:</strong> {selectedMember.pincode || "-"}
+        </p>
+        <p>
+          <strong>Date of Birth:</strong> {selectedMember.dateofbirth || "-"}
+        </p>
       </div>
 
       {/* Close Button */}
       <button
-        onClick={() => setSelectedMember(null)}
+         onClick={closeProfile}
         className="absolute top-4 right-4 text-gray-500 hover:text-black text-lg"
       >
         ✕

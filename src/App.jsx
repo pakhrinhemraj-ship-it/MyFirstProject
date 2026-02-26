@@ -10,6 +10,7 @@ import LoginAccount from "./section/Form/LoginAccount";
 import CreateAccount from "./section/Form/CreateAccount";
 import AddTeamMember from "./section/Form/AddTeamMember";
 import EditTeamMember from "./section/Form/EditTeamMember";
+import OnlyTeamMemberEdit from "./section/Form/OnlyTeamMemberEdit";
 import { ToastContainer } from "react-toastify";
 
 export default function Apps() {
@@ -31,9 +32,10 @@ export default function Apps() {
 
           {/* Protected pages */}
           <Route element={<ProtectedRoute />}>
-            <Route path="team" element={<Team />} />
+            <Route path="/team/*" element={<Team />} />
              <Route path="addteammember" element={<AddTeamMember />} />
-             <Route path="/edit/:email" element={<EditTeamMember/>} />
+             <Route path="/team/profile/editprofile/:email" element={<EditTeamMember/>} />
+              <Route path="/team/profile/editprofile/:email" element={<OnlyTeamMemberEdit/>} />
           </Route>
         </Route>
 
