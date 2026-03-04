@@ -43,25 +43,21 @@ export default function Team() {
   return (
    <div className="pt-[82px] h-screen w-screen overflow-hidden">
        <div className="flex h-full">
-        <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
-            max-w-[350px] p-4 h-full bg-white shadow ">
+        <div className="lg:w-[240px] xl:w-[240px] 2xl:w-[240px]
+            h-full bg-white shadow ">
           {/* Sidebar */}
         </div>
      
         {/* Team List */}
-       <div className="w-full md:w-[82%] px-4 overflow-y-auto">
-           <button
-          onClick={() => navigate("/")}
-          className="absolute pl-6 text-gray-600 text-[2.5rem] font-bold 
-                     hover:text-blue-600 transition mt-[70px]" >
-          ← 
-        </button>
-         <div className="p-6 mt-[100px]"> 
+       <div className="w-full lg:w-[82%] xl:w-[82%]  px-4 overflow-y-auto">
+         <div className=" sm:pl-8 mt-24"> 
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-[24px] font-bold">Team</h2>
+            <h2 className="sm:text-[24px] sm:font-bold text-[18px] font-bold">Team</h2>
             {currentUser?.role === "admin" && (
-              <Link to="/addteammember">
-                <button className="h-[3rem] w-[10rem] text-[#6E54B5] border border-[#6E54B5] rounded-[10px] hover:bg-purple-50">
+             <Link to="/addteammember">
+                <button className=" h-[42px] w-[110px] font-semibold text-[10px] sm:text-[14px] 2xl:text-[18px] 
+                      sm:h-[42px] sm:w-[130px] text-[#6E54B5] border border-[#6E54B5]
+                    rounded-[10px] hover:bg-purple-50 transition-all duration-300 ">
                   Invite Admin
                 </button>
               </Link>
@@ -71,26 +67,29 @@ export default function Team() {
           {members.length === 0 ? (
             <p className="text-gray-500">No team members yet.</p>
           ) : (
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center items-center sm:justify-center sm:items-center 
+              xl:justify-start 2xl:items-center">
                 {members.map((member, idx) => (
                   <div
                     key={idx}
                      onClick={() => openProfile(member)}
-                    className="border p-4 h-[281.26px] w-[254.98px] rounded-lg shadow cursor-pointer
+                    className="border p-4 h-[205.26px] w-[145.98px]  sm:h-[235.26px] sm:w-[193.98px] md:h-[250.26px] md:w-[233.98px]
+                     lg:h-[281.26px] lg:w-[254.98px] xl:h-[281.26px] xl:w-[254.98px] 2xl:h-[281.26px] 
+                     2xl:w-[254.98px] rounded-lg shadow cursor-pointer
                      flex flex-col items-center hover:bg-purple-50 bg-white">
                     <img
                       src={member.image || "/default-profile.png"}
                       alt="Profile"
-                      className="rounded-full h-[80px] w-[80px] mb-2"
+                      className="rounded-full h-[65px] w-[65px] sm:h-[80px] sm:w-[80px] sm:mb-4 mb-3"
                     />
-                    <div className="text-center mt-4 space-y-2">
-                      <h3 className="font-bold text-[16px] text-[#202224]">
+                    <div className="text-center mt-2 space-y-2 mb-2">
+                      <h3 className="text-[12px] font-bold sm:text-[14px] 2xl:text-[16px] text-[#202224]">
                         {member.firstname} {member.lastname}
                       </h3>
-                      <p className="font-semibold text-[14px] text-[#202224]">
+                      <p className="font-semibold text-[10px] sm:text-[12px] 2xl:text-[14px]  text-[#202224]">
                         {member.position}
                       </p>
-                      <p className="font-medium text-[14px] text-[#202224]">
+                      <p className="font-medium text-[10px] sm:text-[12px]  2xl:text-[14px] text-[#202224]">
                         {member.email}
                       </p>
                     </div>
@@ -102,14 +101,14 @@ export default function Team() {
         </div>
 
         {/* Modal Overlay: inside main content only */}
-        {selectedMember && (
+  {selectedMember && (
   <div className="fixed inset-0 bg-black/40 flex justify-center  items-start sm:items-center z-50 overflow-y-auto p-4"
     onClick={closeProfile} >
     <div
       className="max-w-[532px] sm:w-[90%] md:w-[75%] 
         lg:w-[60%] xl:w-[45%] 2xl:w-[35%] bg-white 
         rounded-2xl shadow-2xl p-6 
-        relative mt-10 sm:mt-0 h-full max-h-[953px] overflow-y-auto"
+        relative mt-18 sm:mt-10 sm:mt-0 h-full h-[650px] sm:max-h-[953px] overflow-y-auto"
       onClick={(e) => e.stopPropagation()}>
       
       {/* Profile Header */}
@@ -145,12 +144,7 @@ export default function Team() {
 
       {/* Profile Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base text-[#202224]">
-        <p>
-          <strong>Your Name:</strong> {selectedMember.yourname || "-"}
-        </p>
-         <p>
-          <strong>User Name:</strong> {selectedMember.username || "-"}
-        </p>
+       
         <p>
           <strong>Phone:</strong> {selectedMember.phone || "-"}
         </p>

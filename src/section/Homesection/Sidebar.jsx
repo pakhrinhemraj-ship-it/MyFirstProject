@@ -1,8 +1,10 @@
-import React from "react";
-import TailwindDropdown from "../Form/DropDown";
+import { useState, useRef, useEffect } from "react";
 import useAuthStore from "../Store/useCounterStore";
+import { ChevronDown, Menu, X } from "lucide-react";
+import {
+  Link
+} from "react-router-dom";
 
-// ✅ Import images correctly
 import iconCourses from "../../assets/p9.png";
 import iconStudent from "../../assets/p10.png";
 import iconInbox from "../../assets/p11.png";
@@ -13,123 +15,164 @@ import iconSettings from "../../assets/p6.png";
 import iconLogout from "../../assets/p5.png";
 
 export default function Sidebar() {
-
   const logout = useAuthStore((state) => state.logout);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
+  const [isOpen, setIsOpen] = useState(false); // Mobile sidebar
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("loggedInUser");
-
-    logout(); // ✅ Proper Zustand logout
-
+    logout();
     window.location.href = "/loginaccount";
   };
 
   if (!isLoggedIn) return null;
 
   return (
-    <div>
- <ul className="fixed top-0 left-0 h-full w-[18%] sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] 
-  min-w-[130px] max-w-[350px] border bg-white flex flex-col">
+    <>
+      {/* ☰ Mobile Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed top-5 left-5 z-50 text-3xl"
+      >
+        ☰
+      </button>
 
-  <div className="mt-[125px] pl-4 sm:pl-6 space-y-6">
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/40  lg:hidden"
+        />
+      )}
 
-    {/* Courses */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconCourses}
-        alt="Courses"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[12px] sm:text-[13px] md:text-[14px]">Courses</span>
-    </li>
+      {/* Sidebar */}
+      <div
+        className={`
+        fixed top-0 left-0 h-full bg-white border 
+        w-[50%] sm:w-[35%] md:w-[35%] lg:w-[240px] xl:w-[240px]
+        transform transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+      `}
+      >
+        {/* Menu */}
+        <ul className="mt-28 pl-4 sm:pl-6 md:pl-8 space-y-5">
+          {/* Courses */}
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600  hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconCourses} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Courses
+            </span>
+          </li>
 
-    {/* Student */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconStudent}
-        alt="Student"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Student</span>
-    </li>
+          {/* Students */}
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600  hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconStudent} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Students
+            </span>
+          </li>
 
-    {/* Inbox */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconInbox}
-        alt="Inbox"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Inbox</span>
-    </li>
+          {/* Inbox */}
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600 hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconInbox} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Inbox
+            </span>
+          </li>
 
-    {/* Analytics */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconAnalytics}
-        alt="Analytics"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Analytics</span>
-    </li>
+          {/* Analytics */}
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600 hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconAnalytics} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Analytics
+            </span>
+          </li>
 
-    {/* Dropdown */}
-    <li className="flex gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconDropdown}
-        alt="Dropdown"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <TailwindDropdown />
-    </li>
+          {/* Dropdown */}
+          <li className="flex gap-4 cursor-pointer hover:text-purple-600 hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconDropdown} alt="" className="h-5 w-5 mt-1" />
 
-    {/* Support */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconSupport}
-        alt="Support"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Support</span>
-    </li>
+            <div className="relative w-full" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex justify-between w-full font-semibold text-sm md:text-base"
+              >
+                Our Team 
+                <span
+                  className={`transition-transform ${
+                    dropdownOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <ChevronDown size={18} />
+                </span>
+              </button>
 
-  </div>
-</ul>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  dropdownOpen ? "max-h-40 mt-3" : "max-h-0"
+                }`}
+              >
+                <ul className="pl-2 space-y-2 text-sm">
+                  <Link to="/team">
+                    <li className="hover:text-purple-600 hover:bg-gray-200 rounded-md duration-300 px-3 py-2">
+                      Team
+                    </li>
+                  </Link>
+                </ul>
+              </div>
+            </div>
+          </li>
 
-{/* Footer */}
-<footer className="fixed bottom-0 left-0 w-[18%] sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] 
-  min-w-[130px] max-w-[350px] border bg-white flex flex-col justify-center">
+          {/* Support */}
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600 hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconSupport} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Support
+            </span>
+          </li>
+        </ul>
 
-  <ul className="pl-4 sm:pl-6 space-y-4">
+        {/* Footer */}
+        <div className="absolute bottom-0 w-full border-t py-4 pl-4 sm:pl-6 md:pl-8 space-y-4">
+          <li className="flex items-center gap-4 cursor-pointer hover:text-purple-600  hover:bg-gray-100 rounded-md duration-300 px-3 py-2">
+            <img src={iconSettings} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Settings
+            </span>
+          </li>
 
-    {/* Settings */}
-    <li className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer">
-      <img
-        src={iconSettings}
-        alt="Settings"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Settings</span>
-    </li>
-
-    {/* Logout */}
-    <li
-      className="flex items-center gap-3 sm:gap-6 md:gap-8 cursor-pointer"
-      onClick={handleLogout}
-    >
-      <img
-        src={iconLogout}
-        alt="Logout"
-        className="h-[18px] w-[20px] sm:h-[22px] sm:w-[24px] md:h-[25px] md:w-[27px]"
-      />
-      <span className="font-semibold text-[14px]">Logout</span>
-    </li>
-
-  </ul>
-</footer>
-
-    </div>
+          <li
+            className="flex items-center gap-4 cursor-pointer hover:text-purple-600  hover:bg-gray-100 rounded-md duration-300 px-3 py-2"
+            onClick={handleLogout}
+          >
+            <img src={iconLogout} alt="" className="h-5 w-5" />
+            <span className="font-semibold text-sm md:text-base">
+              Logout
+            </span>
+          </li>
+        </div>
+      </div>
+    </>
   );
 }

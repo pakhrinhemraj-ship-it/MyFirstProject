@@ -82,7 +82,7 @@ export default function AddTeamMember() {
     existingMembers.push(form);
     localStorage.setItem("teamMembers", JSON.stringify(existingMembers));
 
-   toast.success("Team Member Added Successfully ✅");
+   toast.success("Team Member Added Successfully");
 
     setForm({
       firstname: "",
@@ -102,11 +102,10 @@ export default function AddTeamMember() {
     <div className="pt-[82px] h-screen w-screen overflow-hidden">
       <div className="flex h-full">
         {/* Sidebar */}
-         <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
-            max-w-[350px] p-4 h-full bg-white shadow ">
+         <div className="lg:w-[240px] xl:w-[240px] 2xl:w-[240px] p-4 h-full">
           </div>
           
-        <div className="w-full md:w-[82%] px-4 overflow-y-auto">
+        <div className="w-full lg:w-[82%] px-4 overflow-y-auto sm:pl-12">
             <button
           onClick={() => navigate("/team")}
           className=" pl-6 text-gray-600 text-[2.5rem] font-bold 

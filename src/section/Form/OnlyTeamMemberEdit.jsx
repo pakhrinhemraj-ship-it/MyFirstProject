@@ -14,10 +14,9 @@ export default function EditTeamMember() {
 
   /* ================= MAIN FORM ================= */
   const [form, setForm] = useState({
-    yourname: "",
-    username: "",
+    firstname: "",
+    lastname: "",
     email: "",
-    password: "",
     dateofbirth: "",
     presentaddress: "",
     permanentaddress: "",
@@ -165,7 +164,7 @@ const toggleSwitch = (key) => {
     members[index] = form;
     localStorage.setItem("teamMembers", JSON.stringify(members));
 
-    toast.success("Profile updated successfully ✅");
+    toast.success("Profile updated successfully");
     navigate(`/team/profile/${form.email}`);
   };
 
@@ -186,7 +185,7 @@ const handlePreferenceSave = (e) => {
   );
 
   localStorage.setItem("teamMembers", JSON.stringify(updatedMembers));
-  toast.success("Preferences updated successfully ✅");
+  toast.success("Preferences updated successfully");
 };
 
   /* ================= CHANGE PASSWORD ================= */
@@ -280,24 +279,23 @@ return (
   <div className="flex flex-col md:flex-row h-full">
     
     {/* Sidebar */}
-   <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] 
-            max-w-[350px] p-4 h-full bg-white shadow ">
+   <div className="lg:w-[240px] xl:w-[240px] 2xl:w-[240px] p-4 h-full">
           </div>
     {/* Main Content */}
-    <div className="w-full md:w-[82%] px-4 overflow-y-auto">
+    <div className="w-full lg:w-[82%] px-4 overflow-y-auto">
     <div className="flex-1 px-4 md:px-8 overflow-y-auto">
       
       {/* Back Button */}
       <button
         onClick={() => navigate(`/team/profile/${email}`)}
-        className="text-gray-600 text-3xl md:text-4xl font-bold hover:text-blue-600 transition mt-4 md:mt-6"
+        className="text-gray-600 text-3xl md:text-4xl font-bold hover:text-blue-600 transition mt-2 md:mt-6"
       >
         ←
       </button>
 
       {/* Tabs */}
       <div className="border-b border-gray-200 mt-4">
-        <ul className="flex space-x-6">
+        <ul className="flex space-x-1 sm:space-x-6">
           <li>
             <button
                onClick={() => {
@@ -346,29 +344,24 @@ return (
 
       {/* Edit Profile Section */}
       {activeTab === "edit" && (
-        <section id="editProfile" className="mt-20">
+        <section id="editProfile" className="mt-12 sm:mt-20 mb-10">
           <form onSubmit={handleProfileSubmit} className="space-y-6">
             {/* Image Upload */}
-            <div className="flex flex-wrap gap-[10rem]">
-            <div>
-          <div className="flex flex-col justify-between items-center">
-          <div className="relative">
+        <div className="xl:flex flex-wrap xl:gap-[10rem]">
+           
+          <div className="flex flex-col justify-between items-center ">
+          <div className="">
 
-    {/* Profile Image */}
+             {/* Profile Image */}
              <img  src={form.image || "src/assets/p15.png"}
               alt="profile"
-              className="h-32 w-32 md:h-36 md:w-36 rounded-full object-cover" />
+              className="h-32 w-32 md:h-36 md:w-36 rounded-full object-cover mb-2" />
 
             {/* Upload Icon */}
             <label
               htmlFor="upload-photo"
-              className="absolute bottom-2 right-1   cursor-pointer hover:scale-110 transition"
-            >
-              <img
-                src={filephoto}
-                alt="upload"
-                className="h-8 w-8"
-              />
+              className="flex justify-center items-center text-sm md:text-base text-[#6E54B5] font-semibold cursor-pointer">
+              Upload Photo
             </label>
 
             {/* Hidden File Input */}
@@ -380,29 +373,32 @@ return (
               className="hidden"
             />
 
+        </div>
+          <div className="mt-4 text-center flex gap-2 xl:hidden">
+            <p className="text-lg md:text-xl font-semibold">{form.firstname }</p>
+            <p className="text-lg md:text-xl font-semibold">{form.lastname }</p>
           </div>
         </div>
-            </div>
              <div>
             {/* Name */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 ">
-                <label>Your Name</label>
+            <div className="mt-8 flex flex-col sm:flex-row gap-6">
+              <div className="flex-1">
+                <label>First Name</label>
                 <input
                   type="text"
                   name="yourname"
-                  value={form.yourname}
+                  value={form.firstname}
                   onChange={handleChange}
                   placeholder="yourname"
                   className="w-full border rounded-xl h-12 px-4"
                 />
               </div>
               <div className="flex-1">
-                <label>User Name</label>
+                <label>Last Name</label>
                 <input
                   type="text"
                   name="username"
-                  value={form.username}
+                  value={form.lastname}
                   onChange={handleChange}
                   placeholder="username"
                   className="w-full border rounded-xl h-12 px-4"
@@ -410,42 +406,7 @@ return (
               </div>
             </div>
 
-            {/* Email & Phone */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <div className="flex-1 ">
-                <label>Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="example@email.com"
-                  className="w-full border rounded-xl h-12 px-4"
-                />
-              </div>
-              <div className="flex-1">
-                <label>Password</label>
-                <div className="relative w-full max-w-[510px]">
-                <input
-                  type={showNewPassword ? "text" : "password"}
-                    value={form.password}
-                    onChange={handleChange}
-                    name="password"
-                    placeholder="password"
-                    className="w-full border rounded-xl h-12 px-4"/>
-                   <button
-                    type="button"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-700"
-                  >
-                    {showNewPassword ? "🙈" : "👁️"}
-                  </button>
-              </div>
-              </div>
-            </div>
-
-           
-             <div className="flex flex-col sm:flex-row gap-4 pt-2">
+             <div className="flex flex-col sm:flex-row gap-6 pt-2">
               <div className="flex-1">
                 <label>Date of Birth</label>
                 <input
@@ -469,7 +430,7 @@ return (
               </div>
             </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row gap-6 pt-2">
               <div className="flex-1">
                 <label>Permanent Address</label>
                 <input
@@ -494,7 +455,7 @@ return (
               </div>
             </div>
 
-               <div className="flex flex-col sm:flex-row gap-4 pt-2">
+               <div className="flex flex-col sm:flex-row gap-6 pt-2">
               <div className="flex-1">
                 <label>Postal Code</label>
                 <input

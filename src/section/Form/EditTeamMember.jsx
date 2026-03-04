@@ -115,7 +115,7 @@ export default function EditTeamMember() {
     members[index] = form;
     localStorage.setItem("teamMembers", JSON.stringify(members));
 
-    toast.success("Team Member Updated Successfully ✅");
+    toast.success("Team Member Updated Successfully");
     navigate(`/team/profile/${form.email}`);
   };
 
@@ -129,8 +129,11 @@ export default function EditTeamMember() {
         // Admin sees full edit form
         <div className="pt-[82px] min-h-screen w-full bg-[#FFFFFF]">
           <div className="flex h-full">
-            <div className="sm:w-2/5 md:w-1/4 lg:w-1/5 xl:w-[18%] 2xl:w-[16%] min-w-[130px] max-w-[350px] p-4 h-full bg-white shadow"></div>
-            <div className="w-full md:w-[75%] lg:w-[82%] px-4 md:px-8 overflow-y-auto">
+
+            <div className="lg:w-[240px] xl:w-[240px] 2xl:w-[240px]  p-4 h-full bg-white">
+            </div>
+            
+            <div className="lg:w-[82%] px-4 px-8 overflow-y-auto">
               <button
                onClick={() => navigate(`/team/profile/${email}`)}
                 className="text-gray-600 text-3xl md:text-4xl font-bold hover:text-blue-600 transition mt-4 md:mt-6"
@@ -197,20 +200,11 @@ export default function EditTeamMember() {
                   </div>
                 </div>
 
-                {/* Email & Phone */}
+               
+
+                {/* Position & Gender */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <label>Email</label>
-                    <input
-                      type="text"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="example@email.com"
-                      className="w-full border rounded-xl h-12 px-4"
-                    />
-                  </div>
-                  <div className="flex-1">
+                   <div className="flex-1">
                     <label>Phone Number</label>
                     <input
                       type="text"
@@ -221,10 +215,6 @@ export default function EditTeamMember() {
                       className="w-full border rounded-xl h-12 px-4"
                     />
                   </div>
-                </div>
-
-                {/* Position & Gender */}
-                <div className="flex flex-col sm:flex-row gap-4">
                   <div className="flex-1">
                     <label>Position</label>
                     <select
@@ -234,8 +224,109 @@ export default function EditTeamMember() {
                       className="w-full border rounded-xl h-12 px-4"
                     >
                       <option value="">-- Select Position --</option>
-                      <option>Chief Executive Officer (CEO)</option>
-                      {/* Other options remain same */}
+                    <optgroup label="Top Management / Executive">
+                        <option>Chief Executive Officer (CEO)</option>
+                        <option>Chief Operating Officer (COO)</option>
+                        <option>Chief Financial Officer (CFO)</option>
+                        <option>Chief Technology Officer (CTO)</option>
+                        <option>Chief Marketing Officer (CMO)</option>
+                        <option>President</option>
+                        <option>Vice President (VP)</option>
+                      </optgroup>
+
+                      {/* Middle Management */}
+                      <optgroup label="Middle Management">
+                        <option>General Manager (GM)</option>
+                        <option>Operations Manager</option>
+                        <option>Project Manager</option>
+                        <option>HR Manager</option>
+                        <option>Sales Manager</option>
+                        <option>IT Manager</option>
+                        <option>Team Lead</option>
+                        <option>Team Supervisor</option>
+                      </optgroup>
+
+                      {/* Administrative */}
+                      <optgroup label="Administrative & Support Staff">
+                        <option>Executive Assistant</option>
+                        <option>Personal Assistant</option>
+                        <option>Office Administrator</option>
+                        <option>Receptionist</option>
+                        <option>Secretary</option>
+                        <option>Data Entry Operator</option>
+                        <option>Office Clerk</option>
+                      </optgroup>
+
+                      {/* Finance */}
+                      <optgroup label="Finance / Accounting">
+                        <option>Accountant</option>
+                        <option>Finance Officer</option>
+                        <option>Accounts Payable Officer</option>
+                        <option>Accounts Receivable Officer</option>
+                        <option>Payroll Specialist</option>
+                        <option>Financial Analyst</option>
+                      </optgroup>
+
+                      {/* HR */}
+                      <optgroup label="Human Resources (HR)">
+                        <option>HR Manager</option>
+                        <option>HR Executive</option>
+                        <option>HR Officer</option>
+                        <option>Recruitment Officer</option>
+                        <option>Training & Development Officer</option>
+                        <option>Employee Relations Specialist</option>
+                      </optgroup>
+
+                      {/* Sales */}
+                      <optgroup label="Sales & Marketing">
+                        <option>Sales Manager</option>
+                        <option>Marketing Manager</option>
+                        <option>Sales Executive</option>
+                        <option>Marketing Executive</option>
+                        <option>Business Development Manager</option>
+                        <option>Social Media Manager</option>
+                      </optgroup>
+
+                      {/* IT */}
+                      <optgroup label="IT / Technical">
+                        <option>IT Manager</option>
+                        <option>Network Administrator</option>
+                        <option>System Administrator</option>
+                        <option>Software Developer</option>
+                        <option>Software Engineer</option>
+                        <option>Technical Support</option>
+                        <option>Helpdesk</option>
+                        <option>Web Designer</option>
+                        <option>Web Developer</option>
+                      </optgroup>
+
+                      {/* Operations */}
+                      <optgroup label="Operations / Logistics">
+                        <option>Operations Executive</option>
+                        <option>Logistics Manager</option>
+                        <option>Procurement Officer</option>
+                        <option>Buyer</option>
+                        <option>Inventory Manager</option>
+                      </optgroup>
+
+                      {/* Creative */}
+                      <optgroup label="Creative / Design">
+                        <option>Graphic Designer</option>
+                        <option>Content Writer</option>
+                        <option>Copywriter</option>
+                        <option>Creative Director</option>
+                        <option>UX/UI Designer</option>
+                      </optgroup>
+
+                      {/* Other */}
+                      <optgroup label="Other Common Roles">
+                        <option>Customer Service Representative</option>
+                        <option>Call Center Executive</option>
+                        <option>Legal Officer</option>
+                        <option>Legal Advisor</option>
+                        <option>Quality Assurance Officer</option>
+                        <option>Quality Control Officer</option>
+                      </optgroup>
                     </select>
                   </div>
                   <div className="flex-1">
